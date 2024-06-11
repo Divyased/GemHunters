@@ -100,7 +100,63 @@ class Board
     }
     public void Display()
     {
+        for(int i = 0; i<6;i++)
+        {
+            for(int j=0; j<6; j++)
+            {
+                Console.Write(grid[i,j].Occupant + " ");
+            }
+            Console.WriteLine();
+        }
+    }
+    public bool IsValidMove(Player player, char direction)
+    {
+        int x= player.Position.X;
+        int y= player.Position.Y;
 
+        switch (direction)
+        {
+            case 'U':
+            y--;
+            break;
+
+            case 'D':
+            y++; 
+            break;
+
+            case 'L':
+            x--;
+            break;
+
+            case 'R':
+            x++;
+            break;
+
+            default:
+            break;
+        }
+        if (x < 0 || x >= 6 || y < 0 || y >= 6)
+
+            return false;
+
+        return grid[y, x].Occupant != "O";  
+    }
+    public bool CollectGem(Player player)
+    {
+        if (grid[player.Position.Y, player.Position.X].Occupant == "G")
+        {
+            player.GemCount++;
+            grid[player.Position.Y, player.Position.X].Occupant = "-";
+            return true;
+        }
+        return false;
+    }
+    public void UpdatePlayer(Player player, Position newPosition)
+    {
+        grid[player.Position.Y, player.Position.X].Occupant = "-";
+        grid[newPosition.Y, newPosition.X].Occupant = player.Name;
+        player.Position = newPosition;
     }
 }
+
 

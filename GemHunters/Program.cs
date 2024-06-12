@@ -158,5 +158,99 @@ class Board
         player.Position = newPosition;
     }
 }
+class Game
+{
+    private Board Board;
+    private Player Player1;
+    private Player Player2;
+    private Player CurrentTurn;
+    private int TotalTurns;
 
+    public Game()
+    {
+        Board = new Board();
+        Player1= new Player("P1", new Position(0,0));
+        Player2= new Player("P2", new Position(5,5));
+        CurrentTurn = Player1;
+        TotalTurns = 0;
+    }
+    public void Start()
+    {
+        while(!IsGameOver())
+        {
+            Console.WriteLine("Welcome to Gem Hunters! Let's get started");
+            Console.WriteLine("\n Total Turns : " + " " + TotalTurns);
+            Board.Display();
+            Console.WriteLine("\n Current Player : " + " " + CurrentTurn.Name);
+            Console.Write("\n Choose the direction (U/D/L/R): ");
+            char move=Console.ReadKey().KeyChar;
+            Console.WriteLine();
+
+            if (Board.IsValidMove(CurrentTurn, move))
+            {
+                Position newPosition = GetNewPosition(CurrentTurn.Position, move);
+                Board.UpdatePlayer(CurrentTurn, newPosition);
+
+                if (Board.CollectGem(CurrentTurn))
+                {
+                    Console.WriteLine(CurrentTurn.Name + " " + "collected a gem!");
+                }
+                SwitchTurn();
+                TotalTurns++;
+            }
+            else
+            {
+                Console.WriteLine("Invalid move! Try again");
+            }
+            Console.WriteLine();
+
+        }
+        AnnounceWinner();
+
+    }
+    private Position GetNewPosition(Position currentPosition, char direction)
+    {
+        int x= currentPosition.X;
+        int y= currentPosition.Y;
+
+        switch (direction) 
+        {
+
+            case 'U':
+                y--;
+                break;
+
+            case 'D':
+                y++;
+                break;
+
+
+            case 'L':
+                x--;
+                break;
+
+
+            case 'R':
+                x++;
+                break;
+
+            default:
+                break;
+         
+        }
+        return new Position(x, y);
+
+    }
+    private void SwitchTurn()
+    {
+        CurrentTurn=(CurrentTurn==Player1) ? Player2 : Player1;
+    }
+    private bool IsGameOver()
+    {
+        return TotalTurns >= 30;
+    }
+
+    private void AnnounceWinner
+
+}
 

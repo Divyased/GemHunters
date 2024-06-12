@@ -1,4 +1,5 @@
- Gem Hunters 
+ # Gem Hunters 
+ 
 PROJECT DESCRIPTION:
 
 Gem Hunters is a console based 2D game where the players with most number of gems will be the winner.

@@ -16,16 +16,3 @@ When a player move into the sqaure that contains gem, they collect that gem and 
 
 And the player who collects the most number of gems will be the winner and if both the players collect the same number of gems, then it will be declared as a tie.
 
-SET UP INSTRUCTIONS
-
-1. Clone the repository
-   
-2. Navigate to the directory
-   
-3. Run the application
-   
-4. When the game board appears, choose the direction to move the players
-
-5. Continue the game and collect the gems
-
-6. Game will over after 30 turns

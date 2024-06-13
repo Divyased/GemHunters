@@ -1,256 +1,248 @@
 ﻿
 using System;
 
-class Position
+namespace GemHunters
 {
-    public int X {  get; set; }
-   public int Y { get; set; }
+    class Position
+    {
+        public int X { get; set; }
+        public int Y { get; set; }
 
-    public Position(int x, int y)
-    {
-        X = x;
-        Y = y;
-    }
-}
-class Player
-{
-    public string Name { get; set; }
-    public Position Position { get; set; }
-    public int GemCount { get; set; }
-
-    public Player(string name, Position position)
-    {
-        Name = name;
-        Position = position;
-        GemCount = 0;
-    }
-    public void Move(char direction)
-    {
-        switch (direction)
+        public Position(int x, int y)
         {
-            case 'U':
-            Position.Y--;
-            break;
-
-            case 'D':
-            Position.Y++;
-            break;
-
-            case 'L':
-            Position.X--;
-            break;
-
-            case 'R':
-            Position.X++;
-            break;
-
-            default:
-            Console.WriteLine("Invalid Move");
-            break;
-
+            X = x;
+            Y = y;
         }
     }
+    class Player
+    {
+        public string Name { get; set; }
+        public Position Position { get; set; }
+        public int GemCount { get; set; }
+
+        public Player(string name, Position position)
+        {
+            Name = name;
+            Position = position;
+            GemCount = 0;
+        }
+        public void Move(char direction)
+        {
+            switch (direction)
+            {
+                case 'U':
+                    Position.X--;
+                    break;
+
+                case 'D':
+                    Position.X++;
+                    break;
+
+                case 'L':
+                    Position.Y--;
+                    break;
+
+                case 'R':
+                    Position.Y++;
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid Move");
+                    break;
+
+            }
+        }
+
+    }
+    class Cell
+    {
+        public string Occupant { get; set; }
+        public Cell(string occupant="-")
+        {
+            Occupant = occupant;
+        }
         
-}
-class Cell
-{
-    public string Occupant { get; set; }
-    public Cell(string occupant)
-    {
-        Occupant = occupant;
     }
-}
-class Board
-{
-    private Cell[,] grid;
-    public Board()
+    class Board
     {
-        grid= new Cell[6,6];
-        InitializeBoard();
-    }
+        private Cell[,] grid;
+        private Random random = new Random();
+        public Board()
+        {
+            grid = new Cell[6, 6];
+            InitializeBoard();
+        }
         private void InitializeBoard()
-    {
-        for (int i = 0; i<6; i++) 
-        { 
-            for(int j = 0; j<6; j++)
+        {
+            for (int i = 0; i < 6; i++)
             {
-                grid[i, j] = new Cell("-");
-            }
-        }
-        grid[0, 0].Occupant = "P1";
-        grid[5, 5].Occupant = "P2";
-        InitializingObjects("O", 5);
-        InitializingObjects("G", 15);
-    }
-    private void InitializingObjects(string obj, int count)
-    {
-        Random random = new Random();
-        int gemcnt= 0;
-        while(gemcnt<count)
-        {
-            int x= random.Next(6);
-            int y= random.Next(6);
-            if (grid[y, x].Occupant == "-")
-            {
-                grid[y,x].Occupant = obj;
-                gemcnt++;
-            }
-
-        }
-    }
-    public void Display()
-    {
-        for(int i = 0; i<6;i++)
-        {
-            for(int j=0; j<6; j++)
-            {
-                Console.Write(grid[i,j].Occupant + " ");
-            }
-            Console.WriteLine();
-        }
-    }
-    public bool IsValidMove(Player player, char direction)
-    {
-        int x= player.Position.X;
-        int y= player.Position.Y;
-
-        switch (direction)
-        {
-            case 'U':
-            y--;
-            break;
-
-            case 'D':
-            y++; 
-            break;
-
-            case 'L':
-            x--;
-            break;
-
-            case 'R':
-            x++;
-            break;
-
-            default:
-            break;
-        }
-        if (x < 0 || x >= 6 || y < 0 || y >= 6)
-
-            return false;
-
-        return grid[y, x].Occupant != "O";  
-    }
-    public bool CollectGem(Player player)
-    {
-        if (grid[player.Position.Y, player.Position.X].Occupant == "G")
-        {
-            player.GemCount++;
-            grid[player.Position.Y, player.Position.X].Occupant = "-";
-            return true;
-        }
-        return false;
-    }
-    public void UpdatePlayer(Player player, Position newPosition)
-    {
-        grid[player.Position.Y, player.Position.X].Occupant = "-";
-        grid[newPosition.Y, newPosition.X].Occupant = player.Name;
-        player.Position = newPosition;
-    }
-}
-class Game
-{
-    private Board Board;
-    private Player Player1;
-    private Player Player2;
-    private Player CurrentTurn;
-    private int TotalTurns;
-
-    public Game()
-    {
-        Board = new Board();
-        Player1= new Player("P1", new Position(0,0));
-        Player2= new Player("P2", new Position(5,5));
-        CurrentTurn = Player1;
-        TotalTurns = 0;
-    }
-    public void Start()
-    {
-        while(!IsGameOver())
-        {
-            Console.WriteLine("Welcome to Gem Hunters! Let's get started");
-            Console.WriteLine("\n Total Turns : " + " " + TotalTurns);
-            Board.Display();
-            Console.WriteLine("\n Current Player : " + " " + CurrentTurn.Name);
-            Console.Write("\n Choose the direction (U/D/L/R): ");
-            char move=Console.ReadKey().KeyChar;
-            Console.WriteLine();
-
-            if (Board.IsValidMove(CurrentTurn, move))
-            {
-                Position newPosition = GetNewPosition(CurrentTurn.Position, move);
-                Board.UpdatePlayer(CurrentTurn, newPosition);
-
-                if (Board.CollectGem(CurrentTurn))
+                for (int j = 0; j < 6; j++)
                 {
-                    Console.WriteLine(CurrentTurn.Name + " " + "collected a gem!");
+                    grid[i, j] = new Cell();
                 }
-                SwitchTurn();
-                TotalTurns++;
+            }
+            PlaceObjects('G', 11);
+            PlaceObjects('O', 5);
+        }
+        private void PlaceObjects(char item, int count)
+        {
+            int placed = 0;
+            while (placed < count)
+            {
+                int x = random.Next(6);
+                int y = random.Next(6);
+                if (grid[x, y].Occupant == "-")
+                {
+                    grid[x, y].Occupant = item.ToString();
+                    placed++;
+                }
+
+            }
+        }
+        public void Display(Player player1, Player player2)
+        {
+            Console.Clear();
+
+            for (int i = 0; i < 6; i++)
+            {
+                for (int j = 0; j < 6; j++)
+                {
+                    if (i == player1.Position.X && j == player1.Position.Y)
+                    {
+                        Console.Write("P1 ");
+                    }
+                    else if (i == player2.Position.X && j == player2.Position.Y)
+                    {
+                        Console.Write("P2 ");
+                    }
+                    else
+                    {
+                        Console.Write(grid[i, j].Occupant + " ");
+                    }
+                }
+                Console.WriteLine();
+            }
+
+            Console.WriteLine("\n");
+            Console.WriteLine(player1.Name + " Gems: " + player1.GemCount);
+            Console.WriteLine(player2.Name + " Gems: " + player2.GemCount);
+        }
+        public bool IsValidMove(Player player, char direction)
+        {
+            int newX = player.Position.X;
+            int newY = player.Position.Y;
+
+            switch (direction)
+            {
+                case 'U':
+                    newX--;
+                    break;
+
+                case 'D':
+                    newX++;
+                    break;
+
+                case 'L':
+                    newY--;
+                    break;
+
+                case 'R':
+                    newY++;
+                    break;
+
+                default:
+                    return false;
+            }
+            return newX >= 0 && newX < 6 && newY >= 0 && newY < 6 && grid[newX, newY].Occupant != "O";
+        }
+        public void CollectGem(Player player)
+        {
+            if (grid[player.Position.X, player.Position.Y].Occupant == "G")
+            {
+                player.GemCount++;
+                grid[player.Position.X, player.Position.Y].Occupant = "-";
+            }
+        }
+    }      
+    class Game
+    {
+        public Board Board { get; private set; }
+        public Player Player1 { get; private set; }
+        public Player Player2 { get; private set; }
+        private Player CurrentTurn;
+        private int TotalTurns = 30;
+        private int Turnstaken = 0;
+
+        public Game()
+        {
+            Board = new Board();
+            Player1 = new Player("P1", new Position(0, 0));
+            Player2 = new Player("P2", new Position(5, 5));
+            CurrentTurn = Player1;
+        }
+                    
+        public void Start()
+        {
+            while (!IsGameOver())
+            {               
+                Console.WriteLine("\n");
+                Board.Display(Player1,Player2);
+                Console.WriteLine("\nCurrent Player : " + " " + CurrentTurn.Name);
+                Console.WriteLine("\n");
+                Console.Write("Choose the direction (U/D/L/R): ");
+                char move = Console.ReadKey().KeyChar;
+                Console.WriteLine();
+
+                if (Board.IsValidMove(CurrentTurn, move))
+                {
+                    CurrentTurn.Move(move);
+                    Board.CollectGem(CurrentTurn);
+                    Turnstaken++;
+                    SwitchTurn();
+                }
+
+                else
+                {
+                    Console.WriteLine("Invalid move! Try again");
+                }              
+
+            }
+            Board.Display(Player1 ,Player2);
+            AnnounceWinner();
+
+        }
+        private void SwitchTurn()
+        {
+            CurrentTurn = (CurrentTurn == Player1) ? Player2 : Player1;
+        }
+        private bool IsGameOver()
+        {
+            return Turnstaken >= TotalTurns;
+        }
+        private void AnnounceWinner()
+        {
+           
+            if (Player1.GemCount > Player2.GemCount)
+            {
+                Console.WriteLine(Player1.Name + " " + "wins with" + Player1.GemCount + " " + "gems.");
+            }
+            else if (Player2.GemCount > Player1.GemCount)
+            {
+                Console.WriteLine(Player2.Name + " " + "wins with" + Player2.GemCount + " " + "gems.");
             }
             else
             {
-                Console.WriteLine("Invalid move! Try again");
+                Console.WriteLine("\nIt's a tie!!");
             }
-            Console.WriteLine();
-
         }
-        AnnounceWinner();
-
     }
-    private Position GetNewPosition(Position currentPosition, char direction)
+    class Program
     {
-        int x= currentPosition.X;
-        int y= currentPosition.Y;
-
-        switch (direction) 
+        static void Main(string[] args)
         {
-
-            case 'U':
-                y--;
-                break;
-
-            case 'D':
-                y++;
-                break;
-
-
-            case 'L':
-                x--;
-                break;
-
-
-            case 'R':
-                x++;
-                break;
-
-            default:
-                break;
-         
+            Game game = new Game();
+            game.Start();
         }
-        return new Position(x, y);
-
     }
-    private void SwitchTurn()
-    {
-        CurrentTurn=(CurrentTurn==Player1) ? Player2 : Player1;
-    }
-    private bool IsGameOver()
-    {
-        return TotalTurns >= 30;
-    }
-
-    private void AnnounceWinner
-
 }
 

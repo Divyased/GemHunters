@@ -224,11 +224,11 @@ namespace GemHunters
            
             if (Player1.GemCount > Player2.GemCount)
             {
-                Console.WriteLine(Player1.Name + " " + "wins with" + Player1.GemCount + " " + "gems.");
+                Console.WriteLine("\nGame Over!"+ " " + Player1.Name + " " + "wins with" + " " + Player1.GemCount + " " + "gems.");
             }
             else if (Player2.GemCount > Player1.GemCount)
             {
-                Console.WriteLine(Player2.Name + " " + "wins with" + Player2.GemCount + " " + "gems.");
+                Console.WriteLine("\nGame Over!" + " " + Player2.Name + " " + "wins with" + " " + Player2.GemCount + " " + "gems.");
             }
             else
             {
